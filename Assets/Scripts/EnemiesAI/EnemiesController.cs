@@ -25,10 +25,12 @@ public class EnemiesController : MonoBehaviour
     private Transform _player;
     private int _currentPatrolIndex = 0;
     private float _chaseTimer = 0f;
+    private Animator _animator;
 
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        _animator = GetComponent<Animator>();
         if (_player == null)
             Debug.LogError("Player not found. Make sure it has the tag 'Player'.");
     }
@@ -129,5 +131,10 @@ public class EnemiesController : MonoBehaviour
     public void Shoot()
     {
         Debug.Log("Shooting");
+    }
+
+    public void Kill()
+    {
+        Debug.Log("Kill");
     }
 }
