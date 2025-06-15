@@ -54,3 +54,6 @@ TagManager:
   - name: GameObjects
     uniqueID: 2517660355
     locked: 0
+  - name: Transitions
+    uniqueID: 247303095
+    locked: 0
