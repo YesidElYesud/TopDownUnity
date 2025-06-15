@@ -89,7 +89,9 @@ public class EnemiesController : MonoBehaviour
     {
         Vector2 direction = (target - (Vector2)transform.position).normalized;
         transform.position += (Vector3)(direction * speed * Time.deltaTime);
-        transform.localScale = new Vector3(Mathf.Sign(direction.x), 1, 1);
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * Mathf.Sign(direction.x);
+        transform.localScale = scale;
     }
 
     private bool CanSeePlayer()
