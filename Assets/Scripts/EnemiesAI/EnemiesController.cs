@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class EnemiesController : MonoBehaviour
 {
     private enum State { Patrol, Chase, Idle }
@@ -21,6 +23,7 @@ public class EnemiesController : MonoBehaviour
     [SerializeField] private float chaseSpeed = 3.5f;
     [SerializeField] private float chaseTime = 3f;
 
+    private NavMeshAgent _navMeshAgent;
     private State _currentState = State.Patrol;
     private Transform _player;
     private int _currentPatrolIndex = 0;
@@ -30,7 +33,13 @@ public class EnemiesController : MonoBehaviour
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        _navMeshAgent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
+
+        _navMeshAgent.updateUpAxis = false;
+        _navMeshAgent.updateRotation = false;
+        _navMeshAgent.speed = patrolSpeed;
+
         if (_player == null)
             Debug.LogError("Player not found. Make sure it has the tag 'Player'.");
     }
@@ -45,6 +54,7 @@ public class EnemiesController : MonoBehaviour
                 {
                     _currentState = State.Chase;
                     _chaseTimer = chaseTime;
+                    _navMeshAgent.speed = chaseSpeed;
                 }
                 break;
 
@@ -54,7 +64,11 @@ public class EnemiesController : MonoBehaviour
                 {
                     _chaseTimer -= Time.deltaTime;
                     if (_chaseTimer <= 0)
+                    {
                         _currentState = State.Patrol;
+                        _navMeshAgent.speed = patrolSpeed;
+                        GoToNextPatrolPoint();
+                    }
                 }
                 else
                 {
@@ -63,35 +77,48 @@ public class EnemiesController : MonoBehaviour
                 break;
 
             case State.Idle:
-                // Puedes agregar lógica de espera aquí
+                _navMeshAgent.isStopped = true;
                 break;
         }
+
+        UpdateSpriteDirection();
     }
 
     private void Patrol()
     {
         if (patrolPoints.Length == 0) return;
 
-        Transform target = patrolPoints[_currentPatrolIndex];
-        MoveTowards(target.position, patrolSpeed);
+        if (!_navMeshAgent.hasPath || _navMeshAgent.remainingDistance < 0.2f)
+        {
+            GoToNextPatrolPoint();
+        }
+    }
 
-        if (Vector2.Distance(transform.position, target.position) < 0.1f)
-            _currentPatrolIndex = (_currentPatrolIndex + 1) % patrolPoints.Length;
+    private void GoToNextPatrolPoint()
+    {
+        if (patrolPoints.Length == 0) return;
+
+        Transform target = patrolPoints[_currentPatrolIndex];
+        _navMeshAgent.SetDestination(target.position);
+        _currentPatrolIndex = (_currentPatrolIndex + 1) % patrolPoints.Length;
     }
 
     private void Chase()
     {
         if (_player != null)
-            MoveTowards(_player.position, chaseSpeed);
+        {
+            _navMeshAgent.SetDestination(_player.position);
+        }
     }
 
-    private void MoveTowards(Vector2 target, float speed)
+    private void UpdateSpriteDirection()
     {
-        Vector2 direction = (target - (Vector2)transform.position).normalized;
-        transform.position += (Vector3)(direction * speed * Time.deltaTime);
-        Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * Mathf.Sign(direction.x);
-        transform.localScale = scale;
+        if (_navMeshAgent.velocity.sqrMagnitude > 0.01f)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Sign(_navMeshAgent.velocity.x) * Mathf.Abs(scale.x);
+            transform.localScale = scale;
+        }
     }
 
     private bool CanSeePlayer()
