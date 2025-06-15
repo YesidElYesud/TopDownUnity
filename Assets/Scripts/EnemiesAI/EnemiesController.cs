@@ -125,4 +125,9 @@ public class EnemiesController : MonoBehaviour
         Gizmos.DrawRay(eyes.position, leftRayDirection * viewDistance);
         Gizmos.DrawRay(eyes.position, rightRayDirection * viewDistance);
     }
+
+    public void Shoot()
+    {
+        Debug.Log("Shooting");
+    }
 }
