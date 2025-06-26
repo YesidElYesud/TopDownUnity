@@ -1,15 +1,23 @@
 using UnityEngine;
 
-public class keyItem : MonoBehaviour
+namespace Items
 {
-    public string keyID;
-
-    private void OnTriggerEnter2D(Collider2D other)
+    public class KeyItem : MonoBehaviour
     {
-        if (other.CompareTag("Player"))
+        public Puerta PuertaAsociada;
+
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            //GameManager.Instance.addkey(keyID)    
-            Destroy(gameObject);
+            if (other.CompareTag("Player"))
+            {
+                if (PuertaAsociada != null)
+                {
+                    PuertaAsociada.Abrir();
+                }
+                   
+                Destroy(gameObject);
+                
+            }
         }
     }
 }

@@ -39,20 +39,11 @@ public class GameManager : MonoBehaviour
         UpdateMonedasUI();
     }
 
-    public void addkey(string keyID)
-    {
-        keys.Add(keyID);
-        Debug.Log("Llave Obtenida" + keyID);
-    }
+
     void UpdateMonedasUI()
     {
         Debug.Log("Monedas:" + monedas);
         if (monedasText != null)
             monedasText.text = monedas.ToString();
-    }
-
-    public bool haskey(string keyID)
-    {
-        return keys.Contains(keyID);
     }
 }

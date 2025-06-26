@@ -1,39 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Puerta : MonoBehaviour
-{
-    public string idkeyneed;
-    private Animator animator;
-    private bool abierta = false;
-    
-    // Start is called before the first frame update
-    void Start()
+    public class Puerta : MonoBehaviour
     {
-        animator = GetComponent<Animator>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!abierta && other.CompareTag("Player"))
+        public void Abrir()
         {
-            if(GameManager.Instance.haskey(idkeyneed))
-            {
-                AbrirPuerta();
-            }
+            Debug.Log("Puerta Abierta");
+            Destroy(gameObject);
         }
     }
 
-    void AbrirPuerta()
-    {
-        abierta = true;
-        animator.SetTrigger("Abierta");
-    }
-}

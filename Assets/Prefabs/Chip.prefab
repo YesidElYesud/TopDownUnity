@@ -93,7 +93,8 @@ Animation:
   m_Enabled: 1
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: e02ca960924fc1c47bff1f2bda5d3640, type: 2}
-  m_Animations: []
+  m_Animations:
+  - {fileID: 7400000, guid: e02ca960924fc1c47bff1f2bda5d3640, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
@@ -109,6 +110,7 @@ GameObject:
   - component: {fileID: 7264304976898028801}
   - component: {fileID: 7264304976898028815}
   - component: {fileID: 7264304976898028814}
+  - component: {fileID: -3842265962331702100}
   m_Layer: 0
   m_Name: Chip
   m_TagString: Chip
@@ -170,3 +172,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 2
+--- !u!111 &-3842265962331702100
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7264304976898028802}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: e02ca960924fc1c47bff1f2bda5d3640, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: e02ca960924fc1c47bff1f2bda5d3640, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
