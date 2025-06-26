@@ -23,6 +23,15 @@ public class EnemiesController : MonoBehaviour
     [SerializeField] private float chaseSpeed = 3.5f;
     [SerializeField] private float chaseTime = 3f;
 
+    [Header("Shooting Settings")]
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private float shootingCooldown = 1.5f;
+    [SerializeField] private float shootingDistance = 3f;
+    [SerializeField] private Transform firePoint;
+
+    private float shootTimer = 0f;
+
+
     private NavMeshAgent _navMeshAgent;
     private State _currentState = State.Patrol;
     private Transform _player;
@@ -105,11 +114,27 @@ public class EnemiesController : MonoBehaviour
 
     private void Chase()
     {
-        if (_player != null)
+        if (_player == null) return;
+
+        float distanceToPlayer = Vector2.Distance(transform.position, _player.position);
+
+        if (distanceToPlayer > shootingDistance)
         {
+            _navMeshAgent.isStopped = false;
             _navMeshAgent.SetDestination(_player.position);
         }
+        else
+        {
+            _navMeshAgent.isStopped = true;
+            shootTimer -= Time.deltaTime;
+            if (shootTimer <= 0f)
+            {
+                _animator.SetTrigger("Shoot");
+                shootTimer = shootingCooldown;
+            }
+        }
     }
+
 
     private void UpdateSpriteDirection()
     {
@@ -157,10 +182,31 @@ public class EnemiesController : MonoBehaviour
         Gizmos.DrawRay(eyes.position, rightRayDirection * viewDistance);
     }
 
-    public void Shoot()
+    private void ShootAtPlayer()
     {
-        Debug.Log("Shooting");
+        Debug.Log("Enemy shot projectile");
+        if (projectilePrefab == null || firePoint == null || _player == null)
+        {
+            if(_player == null)
+                Debug.LogError("Player not found. Make sure it has the tag 'Player'.");
+            else
+                   Debug.LogError("Projectile prefab or fire point is not set.");
+            return;
+        }
+
+        Vector2 direction = (_player.position - firePoint.position).normalized;
+
+        GameObject proj = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        Projectiles projectileScript = proj.GetComponent<Projectiles>();
+
+        if (projectileScript != null)
+        {
+            projectileScript.SetDirection(direction);
+        }
+
+        
     }
+
 
     public void Kill()
     {

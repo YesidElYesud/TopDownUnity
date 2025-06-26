@@ -9,11 +9,13 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D playerRb;
     private Vector2 moveInput;
     private Animator playerAnimator;
+    private SpriteRenderer sprite;
 
     void Start()
     {
         playerRb = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -23,14 +25,27 @@ public class PlayerMovement : MonoBehaviour
         float moveY = Input.GetAxisRaw("Vertical");
         moveInput = new Vector2(moveX, moveY).normalized;
 
-        playerAnimator.SetFloat("Horizontal", moveX);
-        playerAnimator.SetFloat("Vertical", moveY);
-        playerAnimator.SetFloat("Speed", moveInput.sqrMagnitude);
+        if (moveInput.x < 0)
+        {
+            sprite.flipX = true;
+        }
+        else if (moveInput.x > 0)
+        {
+            sprite.flipX = false;
+        }
+
+        bool isMoving = moveInput.magnitude > 0.1f;
+        playerAnimator.SetBool("IsMoving", isMoving);
     }
 
     private void FixedUpdate()
     {
         // Físicas
         playerRb.MovePosition(playerRb.position + moveInput * speed * Time.fixedDeltaTime);
+    }
+
+    private void Shoot()
+    {
+        
     }
 }
