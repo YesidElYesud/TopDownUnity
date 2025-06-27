@@ -1,16 +1,24 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Shooter : MonoBehaviour
 {
-    public GameObject bulletPrefab;   // El prefab del proyectil
-    public Transform firePoint;       // El punto de origen del disparo (puede ser el centro de la flecha)
-    public float bulletSpeed = 10f;
+    [SerializeField] private GameObject bulletPrefab;   // El prefab del proyectil
+    [SerializeField] private Transform firePoint;       // El punto de origen del disparo (puede ser el centro de la flecha)
+    [SerializeField] private float bulletSpeed = 10f;
+    [SerializeField] private float damage = 1f; // Daño del proyectil
+
+    private Animator animator;
+
+
+    void Start() => animator = GetComponent<Animator>();
+    
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0)) // Clic izquierdo
         {
-            Shoot();
+            animator.SetTrigger("Shoot"); // Activar animación de disparo
         }
     }
 
@@ -22,7 +30,8 @@ public class Shooter : MonoBehaviour
         Vector3 direction = (mousePos - firePoint.position).normalized;
 
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-        rb.velocity = direction * bulletSpeed;
+        Projectiles projectileScript = bullet.GetComponent<Projectiles>();
+        projectileScript.SetDirection(direction);
+        projectileScript.damage = damage; // Set the damage of the projectile
     }
 }

@@ -6,6 +6,8 @@
 public class Projectiles : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
+    [SerializeField] public float damage = 1f;
+    [SerializeField] private LayerMask collisionLayer;
 
     private Vector2 direction;
     private Rigidbody2D rb;
@@ -22,7 +24,7 @@ public class Projectiles : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        SetDirection(Vector2.right); // Dirección por defecto
+        // SetDirection(Vector2.right); // Dirección por defecto
     }
 
     public void FixedUpdate()
@@ -39,19 +41,32 @@ public class Projectiles : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
+        {
+            animator.SetTrigger("Collide");
+            return;
+        }
+        // Verificar si el objeto con el que colisiona es del layer de colisión
+        if ((collisionLayer & (1 << other.gameObject.layer)) == 0 || hasCollided)
+            return;
         if (!hasCollided)
         {
             hasCollided = true;
-
             // Detener el movimiento
             rb.velocity = Vector2.zero;
             speed = 0f;
-
             // Activar animación de colisión
             animator.SetTrigger("Collide");
-
             // Opcional: Desactivar collider para evitar múltiples colisiones
             GetComponent<Collider2D>().enabled = false;
+            
+            if (other.TryGetComponent(out IDamageable damageable))
+            {
+                // Crear un objeto DamageInfo para pasar información del daño
+                DamageInfo damageInfo = new DamageInfo(damage, gameObject);
+                // Aplicar daño al objeto colisionado
+                damageable.TakeDamage(damageInfo);
+            }
         }
     }
 

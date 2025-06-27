@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 moveInput;
     private Animator playerAnimator;
     private SpriteRenderer sprite;
+    private bool isDead = false;
 
     void Start()
     {
@@ -21,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isDead) return;
+
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
         moveInput = new Vector2(moveX, moveY).normalized;
@@ -44,8 +48,15 @@ public class PlayerMovement : MonoBehaviour
         playerRb.MovePosition(playerRb.position + moveInput * speed * Time.fixedDeltaTime);
     }
 
-    private void Shoot()
+    public void Death()
     {
-        
+        isDead = true;
+        playerAnimator.SetTrigger("Dead");
+        playerRb.velocity = Vector2.zero;
+    }
+
+    public void GameOver()
+    {
+        SceneManager.LoadScene("S_Game1");
     }
 }

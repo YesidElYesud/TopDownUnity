@@ -232,10 +232,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 710394d0daac4e74394389d145cbc01e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 1193135584647063705, guid: e26da6f85806c2d4c979b7ed6ff9ae85,
+  bulletPrefab: {fileID: 4637677215641439609, guid: ed06c6ec16ff68547872b32ed14d7778,
     type: 3}
   firePoint: {fileID: 5882125304837854330}
   bulletSpeed: 10
+  damage: 1
 --- !u!114 &1843728693677913990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,7 +290,18 @@ MonoBehaviour:
   resistances: []
   onDeath:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1843728693677913990}
+        m_MethodName: Death
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2206454175748626584
 GameObject:
   m_ObjectHideFlags: 0
